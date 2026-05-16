@@ -109,7 +109,7 @@ ${chalk.green("✔")} ${chalk.bold("Your ZerithDB app is ready!")}
   ${chalk.cyan(`cd ${appName}`)}
   ${chalk.cyan("npm run dev")}
 
-${chalk.gray("Docs:")} https://zerithdb.dev/docs
+${chalk.gray("Docs:")} https://zerithdb.netlify.app/docs
 ${chalk.gray("Discord:")} https://discord.gg/MhvuDvzWfF
 `);
 }
@@ -184,7 +184,7 @@ const app = createApp({
 app.sync.enable();
 
 export default function App() {
-  return <div>Hello from ZerithDB! Edit src/App.tsx to get started.</div>;
+  return <div>Hello from ZerithDB! Edit src/app/page.tsx to get started.</div>;
 }
 `;
 }
