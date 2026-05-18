@@ -4,8 +4,8 @@ export type DocumentId = string;
 /** Name of a collection within ZerithDB */
 export type CollectionName = string;
 
-/** Metadata fields added to every document by ZerithDB */
-type Metadata = {
+/** Base document shape. All stored documents have an `_id` field added automatically. */
+export type Document<T extends Record<string, any> = Record<string, any>> = T & {
   _id: DocumentId;
   /** Created-at timestamp in Unix milliseconds */
   _createdAt: number;
@@ -13,21 +13,9 @@ type Metadata = {
   _updatedAt: number;
 };
 
-/** Internal helper to safely merge schema and metadata fields */
-type MergeDocument<T extends Record<string, any>> = {
-  [K in keyof T | keyof Metadata]: K extends keyof Metadata
-    ? Metadata[K]
-    : K extends keyof T
-      ? T[K]
-      : never;
-};
-
-/** Base document shape. All stored documents have metadata fields added automatically. */
-export type Document<T extends Record<string, any> = Record<string, any>> = MergeDocument<T>;
-
 /**
  * MongoDB-style query filter operators.
- * Supports filtering on both schema fields and metadata (_id, _createdAt, _updatedAt).
+ * Nested object fields are matched by equality.
  */
 export type QueryFilter<T extends Record<string, any>> = {
   [K in keyof Document<T>]?:
@@ -39,7 +27,9 @@ export type QueryFilter<T extends Record<string, any>> = {
     | { $lt: Document<T>[K] }
     | { $lte: Document<T>[K] }
     | { $in: Document<T>[K][] }
-    | { $nin: Document<T>[K][] };
+    | { $nin: Document<T>[K][] }
+    | { $exists: boolean }
+    | { $regex: RegExp | string };
 };
 
 /** Partial update spec — only specified fields are modified */
